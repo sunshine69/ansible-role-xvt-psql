@@ -1,0 +1,4 @@
+---
+# This needs to match with the default engine we use in the rds
+pg_client_deb_name: "postgresql-client-{{postgres_version}}"
+...

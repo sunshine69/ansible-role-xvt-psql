@@ -1,0 +1,37 @@
+---
+- name: Install wget ca-certs
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - wget
+    - ca-certificates
+
+# - name: Install sources
+#   shell: echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+
+# - name: Install apt key
+#   shell: wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+- name: Install sources
+  apt_repository:
+    repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ansible_distribution_release}}-pgdg main"
+    state: present
+
+- name: Install apt key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Update apt cache
+  apt: update_cache=yes
+
+- name: Ensure postgresql-client is installed
+  apt: name={{pg_client_deb_name}} state=present update_cache=yes cache_valid_time=3600
+
+- name: Fixing invalid locale
+  command: locale-gen en_AU.UTF-8
+  changed_when: false
+...
